@@ -22,12 +22,13 @@ app.use(express.json());
 app.use("/pedidos", pedidosRouter);
 
 // Serve arquivos estáticos do frontend
-app.use(express.static(path.join(__dirname, "frontend/dist")));
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 // Redireciona todas as rotas não-API para o index.html (SPA)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/dist/index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
+
 
 const server = http.createServer(app);
 
