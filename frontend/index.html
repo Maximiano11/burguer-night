@@ -2,11 +2,35 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Burger Night</title>
+    <title>Burguer Night</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <h1>Registrar Pedido</h1>
+    <form id="pedidoForm">
+      <input
+        type="text"
+        id="nomeCliente"
+        placeholder="Nome do Cliente"
+        required
+      />
+      <input
+        type="number"
+        id="quantidadeCombos"
+        placeholder="Quantidade de Combos"
+        required
+      />
+      <input
+        type="text"
+        id="refrigerantes"
+        placeholder="Refrigerantes (separados por vírgula)"
+        required
+      />
+      <button type="submit">Enviar Pedido</button>
+    </form>
+
+    <h2>Pedidos Recebidos</h2>
+    <ul id="pedidosList"></ul>
+
+    <script src="index.js"></script>
   </body>
 </html>
