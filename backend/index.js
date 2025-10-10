@@ -1,27 +1,24 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-dotenv.config();
-
-import { pedidosRouter } from "./routes/pedidos.js";
-import "./models/pedido.js"; // cria a tabela
+const express = require("express");
+const http = require("http");
+const cors = require("cors");
+const { initSocket } = require("./socket");
 
 const app = express();
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+app.use(
+  cors({
+    origin: "https://burguer-night.netlify.app",
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-// Rotas
-app.use("/api/pedidos", pedidosRouter);
+// suas rotas aqui, ex:
+const pedidosRouter = require("./routes/pedidos");
+app.use("/pedidos", pedidosRouter);
 
-// Socket.IO
-import { createServer } from "http";
-import { Server } from "socket.io";
-const server = createServer(app);
-export const io = new Server(server, {
-  cors: { origin: process.env.FRONTEND_URL },
-});
+const server = http.createServer(app);
+initSocket(server); // 🔥 aqui inicializa o Socket.IO
 
-// Start
-server.listen(process.env.PORT || 4001, () => {
-  console.log(`Servidor rodando na porta ${process.env.PORT || 4001}`);
-});
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
