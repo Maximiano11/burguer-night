@@ -2,23 +2,25 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const { initSocket } = require("./socket");
+const pedidosRouter = require("./routes/pedidos");
 
 const app = express();
 app.use(
   cors({
-    origin: "https://burguer-night-1.onrender.com/",
-    methods: ["GET", "POST"],
+    origin: "https://burguer-night-1.onrender.com",
+    methods: ["GET", "POST", "PATCH"],
     credentials: true,
   })
 );
 app.use(express.json());
 
-// suas rotas aqui, ex:
-const pedidosRouter = require("./routes/pedidos");
+// Rotas
 app.use("/pedidos", pedidosRouter);
 
 const server = http.createServer(app);
-initSocket(server); // 🔥 aqui inicializa o Socket.IO
+
+// Inicializa Socket.IO
+initSocket(server);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
