@@ -2,9 +2,9 @@
   "name": "burger-night",
   "version": "1.0.0",
   "description": "Sistema de pedidos de combos de hambúrguer (Burger + Fritas + Refrigerante)",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node index.js",
     "build": "node build.js"
   },
   "keywords": [],
