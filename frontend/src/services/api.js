@@ -1,5 +1,11 @@
 import axios from "axios";
 
+const baseURL =
+  process.env.NODE_ENV === "production"
+    ? "https://burguer-night.onrender.com" // backend no Render
+    : "http://localhost:4001";               // backend local
+
 export const api = axios.create({
-  baseURL: "https://burguer-night.onrender.com", // deve apontar para o backend
+  baseURL,
+  withCredentials: true,
 });
