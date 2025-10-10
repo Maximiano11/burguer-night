@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] },
+    "allowJs": true
+  },
+  "vueCompilerOptions": {
+    "globalTypesPath": "./node_modules/.vite/vue/types.d.ts"
+  },
+  "exclude": ["node_modules", "dist"]
+}
