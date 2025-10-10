@@ -1,0 +1,12 @@
+{
+  "name": "burger-night-root",
+  "version": "1.0.0",
+  "description": "Build wrapper para frontend e backend do Burger Night",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "author": "João Vitor Maximiano",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
