@@ -1,10 +1,7 @@
 <template>
-  <div class="container">
-    <h2 class="title">Pedidos na Cozinha</h2>
-
-    <div v-if="pedidos.length === 0" class="empty">
-      Nenhum pedido no momento.
-    </div>
+  <div>
+    <h2>Pedidos na Cozinha</h2>
+    <div v-if="pedidos.length === 0">Nenhum pedido no momento.</div>
 
     <div
       v-for="pedido in pedidos"
@@ -12,30 +9,23 @@
       class="pedido-card"
       :class="statusClass(pedido.status)"
     >
-      <div class="pedido-header">
-        <h3>Pedido {{ pedido.numero_pedido }} - {{ pedido.nome_cliente }}</h3>
-        <span class="status-label">{{ pedido.status }}</span>
-      </div>
+      <h3>Pedido {{ pedido.numero_pedido }} - {{ pedido.nome_cliente }}</h3>
+      <p>Status: {{ pedido.status }}</p>
 
-      <ul class="combo-list">
+      <ul>
         <li v-for="(refri, index) in pedido.refrigerantes" :key="index">
           Combo {{ index + 1 }}: {{ refri }}
         </li>
       </ul>
 
-      <div class="buttons">
-        <button
-          v-if="pedido.status === 'Pendente'"
-          @click="mudarStatus(pedido.id, 'Em Preparo')"
-        >
+      <div v-if="pedido.status === 'Pendente'">
+        <button @click="mudarStatus(pedido.id, 'Em Preparo')">
           Em Preparo
         </button>
-        <button
-          v-else-if="pedido.status === 'Em Preparo'"
-          @click="mudarStatus(pedido.id, 'Pronto')"
-        >
-          Pronto
-        </button>
+      </div>
+
+      <div v-else-if="pedido.status === 'Em Preparo'">
+        <button @click="mudarStatus(pedido.id, 'Pronto')">Pronto</button>
       </div>
     </div>
   </div>
@@ -54,12 +44,14 @@ export default {
   },
   created() {
     this.buscarPedidos();
-    this.socket = io("http://localhost:4001");
+    this.socket = io("https://burguer-night.onrender.com");
 
+    // Receber novos pedidos em tempo real
     this.socket.on("novo-pedido", (pedido) => {
       this.pedidos.push(pedido);
     });
 
+    // Atualizações de status em tempo real
     this.socket.on("atualizacao-status", (pedidoAtualizado) => {
       const index = this.pedidos.findIndex((p) => p.id === pedidoAtualizado.id);
       if (index !== -1) this.pedidos[index] = pedidoAtualizado;
@@ -69,6 +61,7 @@ export default {
     async buscarPedidos() {
       try {
         const res = await api.get("/pedidos");
+        // Filtra pedidos Pendente ou Em Preparo
         this.pedidos = res.data.filter(
           (p) => p.status === "Pendente" || p.status === "Em Preparo"
         );
@@ -79,6 +72,7 @@ export default {
     async mudarStatus(id, status) {
       try {
         await api.patch(`/pedidos/${id}/status`, { status });
+        // A atualização real-time via socket já cuida da UI
       } catch (err) {
         console.error(err);
         alert("Erro ao atualizar status");
@@ -101,90 +95,34 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  max-width: 700px;
-  margin: 40px auto;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.title {
-  text-align: center;
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 25px;
-}
-
-.empty {
-  text-align: center;
-  color: #777;
-  font-size: 1.2rem;
-}
-
-/* Cartão de pedido */
 .pedido-card {
-  background-color: #f7f9fc;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  margin-bottom: 20px;
-  transition: all 0.2s;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
 }
 
-.pedido-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-}
-
-/* Cores de status */
 .status-pendente {
-  border-left: 5px solid #fdd835;
+  background-color: #fff59d; /* amarelo */
 }
+
 .status-preparo {
-  border-left: 5px solid #ff8f00;
+  background-color: #ffb74d; /* laranja */
 }
+
 .status-pronto {
-  border-left: 5px solid #43a047;
-}
-
-.pedido-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.status-label {
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 8px;
-  color: white;
-  background-color: #555;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-}
-
-.combo-list {
-  margin-top: 10px;
-  padding-left: 20px;
-}
-
-.buttons {
-  margin-top: 15px;
+  background-color: #81c784; /* verde */
 }
 
 button {
-  padding: 8px 15px;
+  margin-top: 10px;
+  padding: 5px 10px;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
-  color: white;
-  background-color: #007bff;
-  margin-right: 10px;
-  transition: all 0.2s;
 }
 
 button:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
+  opacity: 0.8;
 }
 </style>
