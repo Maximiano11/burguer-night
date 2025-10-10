@@ -1,8 +1,8 @@
-import express from "express";
-import { pool } from "../db.js";
-import { io } from "../index.js"; // para emitir eventos em tempo real
+const express = require("express");
+const { pool } = require("../db");
+const { getIO } = require("../socket");
 
-export const pedidosRouter = express.Router();
+const pedidosRouter = express.Router();
 
 // Opções válidas de refrigerante
 const opcoesRefrigerante = ["Coca-Cola", "Coca-Zero", "Guarana"];
@@ -12,7 +12,6 @@ pedidosRouter.post("/", async (req, res) => {
   try {
     const { nome_cliente, quantidade_combos, refrigerantes } = req.body;
 
-    // Validação básica
     if (!nome_cliente || !quantidade_combos || !refrigerantes) {
       return res.status(400).send("Todos os campos são obrigatórios.");
     }
@@ -27,7 +26,6 @@ pedidosRouter.post("/", async (req, res) => {
       }
     }
 
-    // Pegar próximo número de pedido
     const { rows } = await pool.query(
       `SELECT MAX(numero_pedido) AS max_num FROM pedidos`
     );
@@ -41,7 +39,8 @@ pedidosRouter.post("/", async (req, res) => {
 
     const pedido = result.rows[0];
 
-    // Emitir evento em tempo real para frontend
+    // Emitir evento em tempo real
+    const io = getIO();
     io.emit("novo-pedido", pedido);
 
     res.json(pedido);
@@ -77,7 +76,7 @@ pedidosRouter.patch("/:id/status", async (req, res) => {
 
     const pedidoAtualizado = result.rows[0];
 
-    // Emitir atualização em tempo real
+    const io = getIO();
     io.emit("atualizacao-status", pedidoAtualizado);
 
     res.json(pedidoAtualizado);
@@ -86,3 +85,5 @@ pedidosRouter.patch("/:id/status", async (req, res) => {
     res.status(500).send("Erro ao atualizar status");
   }
 });
+
+module.exports = pedidosRouter;
