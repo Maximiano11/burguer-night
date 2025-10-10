@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://localhost:4001/api", // deve apontar para o backend
+  baseURL: "https://burguer-night.onrender.com", // deve apontar para o backend
 });
