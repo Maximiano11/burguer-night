@@ -5,7 +5,7 @@ let io;
 function initSocket(server) {
   io = new Server(server, {
     cors: {
-      origin: "https://burguer-night.netlify.app", // coloque o domínio exato do seu frontend
+      origin: "https://burguer-night-1.onrender.com/", // coloque o domínio exato do seu frontend
       methods: ["GET", "POST"],
       credentials: true,
     },
