@@ -3,7 +3,7 @@ const { execSync } = require("child_process");
 console.log("🧱 Iniciando build do frontend...");
 
 try {
-  execSync("cd frontend && npm install && npm run build", { stdio: "inherit" });
+  execSync('chmod +x ./frontend/node_modules/.bin/vite', { stdio: 'inherit' });
   console.log("✅ Build do frontend concluído!");
 } catch (err) {
   console.error("❌ Erro ao construir o frontend:", err);
