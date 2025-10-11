@@ -1,13 +1,12 @@
-// socket.js (ES Modules)
+// backend/socket.js
 import { Server } from "socket.io";
 
+let io;
+
 export function initSocket(server) {
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: {
-      origin:
-        process.env.NODE_ENV === "production"
-          ? "https://burguer-night.onrender.com"
-          : "http://localhost:5173",
+      origin: "https://burguer-night-1.onrender.com",
       methods: ["GET", "POST", "PATCH"],
       credentials: true,
     },
@@ -17,7 +16,12 @@ export function initSocket(server) {
     console.log("Novo cliente conectado:", socket.id);
 
     socket.on("disconnect", () => {
-      console.log("Cliente desconectou:", socket.id);
+      console.log("Cliente desconectado:", socket.id);
     });
   });
+}
+
+export function getIO() {
+  if (!io) throw new Error("Socket.IO não inicializado");
+  return io;
 }
