@@ -15,7 +15,7 @@ const app = express();
 // Configuração de CORS
 import cors from "cors";
 app.use(cors({
-  origin: "https://burguer-night.onrender.com", // o domínio do seu FRONT no Render
+  origin: "https://burguer-night-1.onrender.com", // o domínio do seu FRONT no Render
   credentials: true,
 }));
 
