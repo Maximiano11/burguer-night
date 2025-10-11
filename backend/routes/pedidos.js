@@ -1,10 +1,10 @@
-const express = require("express");
-const { pool } = require("../db");
-const { getIO } = require("../socket");
+// backend/routes/pedidos.js
+import express from "express";
+import { pool } from "../db.js";
+import { getIO } from "../socket.js";
 
 const pedidosRouter = express.Router();
 
-// Opções válidas de refrigerante
 const opcoesRefrigerante = ["Coca-Cola", "Coca-Zero", "Guarana"];
 
 // Criar pedido
@@ -39,7 +39,6 @@ pedidosRouter.post("/", async (req, res) => {
 
     const pedido = result.rows[0];
 
-    // Emitir evento em tempo real
     const io = getIO();
     io.emit("novo-pedido", pedido);
 
@@ -86,4 +85,4 @@ pedidosRouter.patch("/:id/status", async (req, res) => {
   }
 });
 
-module.exports = pedidosRouter;
+export default pedidosRouter;
