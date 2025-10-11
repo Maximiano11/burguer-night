@@ -11,11 +11,9 @@
 </template>
 
 <script>
-import { api } from "../services/api";
-import { io } from "socket.io-client";
+import { api } from "../services/api.js";
+import { socket } from "../services/socket.js";
 import PedidoCard from "../components/PedidoCard.vue";
-
-const socket = io("https://burguer-night.onrender.com");
 
 export default {
   components: { PedidoCard },
@@ -29,12 +27,17 @@ export default {
   },
   methods: {
     async carregarPedidos() {
-      const res = await api.get("/pedidos");
-      this.pedidos = res.data;
+      try {
+        const res = await api.get("/pedidos");
+        this.pedidos = res.data;
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
   mounted() {
     this.carregarPedidos();
+
     socket.on("novo-pedido", (pedido) => this.pedidos.push(pedido));
     socket.on("atualizacao-status", (pedidoAtualizado) => {
       const index = this.pedidos.findIndex((p) => p.id === pedidoAtualizado.id);

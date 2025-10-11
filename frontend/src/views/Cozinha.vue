@@ -33,26 +33,17 @@
 
 <script>
 import { api } from "../services/api.js";
-import { io } from "socket.io-client";
+import { socket } from "../services/socket.js";
 
 export default {
   data() {
-    return {
-      pedidos: [],
-      socket: null,
-    };
+    return { pedidos: [] };
   },
-  created() {
+  mounted() {
     this.buscarPedidos();
-    this.socket = io("https://burguer-night.onrender.com");
 
-    // Receber novos pedidos em tempo real
-    this.socket.on("novo-pedido", (pedido) => {
-      this.pedidos.push(pedido);
-    });
-
-    // Atualizações de status em tempo real
-    this.socket.on("atualizacao-status", (pedidoAtualizado) => {
+    socket.on("novo-pedido", (pedido) => this.pedidos.push(pedido));
+    socket.on("atualizacao-status", (pedidoAtualizado) => {
       const index = this.pedidos.findIndex((p) => p.id === pedidoAtualizado.id);
       if (index !== -1) this.pedidos[index] = pedidoAtualizado;
     });
@@ -61,7 +52,6 @@ export default {
     async buscarPedidos() {
       try {
         const res = await api.get("/pedidos");
-        // Filtra pedidos Pendente ou Em Preparo
         this.pedidos = res.data.filter(
           (p) => p.status === "Pendente" || p.status === "Em Preparo"
         );
@@ -72,57 +62,26 @@ export default {
     async mudarStatus(id, status) {
       try {
         await api.patch(`/pedidos/${id}/status`, { status });
-        // A atualização real-time via socket já cuida da UI
       } catch (err) {
         console.error(err);
         alert("Erro ao atualizar status");
       }
     },
     statusClass(status) {
-      switch (status) {
-        case "Pendente":
-          return "status-pendente";
-        case "Em Preparo":
-          return "status-preparo";
-        case "Pronto":
-          return "status-pronto";
-        default:
-          return "";
-      }
+      if (status === "Pendente") return "status-pendente";
+      if (status === "Em Preparo") return "status-preparo";
+      if (status === "Pronto") return "status-pronto";
+      return "";
     },
   },
 };
 </script>
 
 <style scoped>
-.pedido-card {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-}
-
-.status-pendente {
-  background-color: #fff59d; /* amarelo */
-}
-
-.status-preparo {
-  background-color: #ffb74d; /* laranja */
-}
-
-.status-pronto {
-  background-color: #81c784; /* verde */
-}
-
-button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  opacity: 0.8;
-}
+.pedido-card { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; }
+.status-pendente { background-color: #fff59d; }
+.status-preparo { background-color: #ffb74d; }
+.status-pronto { background-color: #81c784; }
+button { margin-top: 10px; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
+button:hover { opacity: 0.8; }
 </style>
