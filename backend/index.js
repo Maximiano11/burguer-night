@@ -13,16 +13,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Configuração de CORS
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://burguer-night.onrender.com"
-        : "http://localhost:5173",
-    methods: ["GET", "POST", "PATCH"],
-    credentials: true,
-  })
-);
+import cors from "cors";
+app.use(cors({
+  origin: "https://burguer-night.onrender.com", // o domínio do seu FRONT no Render
+  credentials: true,
+}));
 
 app.use(express.json());
 
