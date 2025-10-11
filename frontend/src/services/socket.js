@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 const SOCKET_URL =
-  process.env.NODE_ENV === "production"
+  import.meta.env.MODE === "production"
     ? "https://burguer-night.onrender.com"
     : "http://localhost:4001";
 
