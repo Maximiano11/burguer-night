@@ -1,8 +1,9 @@
+// frontend/socket.js
 import { io } from "socket.io-client";
 
-const SOCKET_URL =
-  import.meta.env.MODE === "production"
-    ? "https://burguer-night.onrender.com"
-    : "http://localhost:4001";
+// Apenas a URL do backend no Render
+const SOCKET_URL = "https://burguer-night.onrender.com";
 
-export const socket = io(SOCKET_URL);
+export const socket = io(SOCKET_URL, {
+  withCredentials: true,
+});
