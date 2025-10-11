@@ -10,7 +10,7 @@ const app = express();
 // Configuração de CORS
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production"
+    origin: import.meta.env.MODE === "production"
       ? "https://burguer-night.onrender.com" // URL do frontend no Render
       : "http://localhost:5173",             // URL do frontend local (Vite padrão)
     methods: ["GET", "POST", "PATCH"],
@@ -38,5 +38,5 @@ const server = http.createServer(app);
 // Inicializa Socket.IO
 initSocket(server);
 
-const PORT = process.env.PORT || 4001;
+const PORT = import.meta.env.MODE || 4001;
 server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

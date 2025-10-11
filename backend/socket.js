@@ -5,7 +5,7 @@ let io;
 function initSocket(server) {
   io = require("socket.io")(server, {
     cors: {
-      origin: process.env.NODE_ENV === "production"
+      origin: import.meta.env.MODE === "production"
         ? "https://burguer-night.onrender.com"
         : "http://localhost:5173",
       methods: ["GET", "POST"],
