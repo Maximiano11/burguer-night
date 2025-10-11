@@ -7,31 +7,32 @@ const pedidosRouter = require("./routes/pedidos");
 
 const app = express();
 
-// CORS configurado para dev e produção
-const allowedOrigins = [
-  "http://localhost:5173", // frontend dev (Vite)
-  "https://burguer-night-1.onrender.com" // produção
-];
-app.use(cors({
-  origin: allowedOrigins,
-  methods: ["GET", "POST", "PATCH"],
-  credentials: true,
-}));
+// Configuração de CORS
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === "production"
+      ? "https://burguer-night.onrender.com" // URL do frontend no Render
+      : "http://localhost:5173",             // URL do frontend local (Vite padrão)
+    methods: ["GET", "POST", "PATCH"],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
 // Rotas da API
 app.use("/pedidos", pedidosRouter);
 
-// Serve frontend estático
-const frontendDist = path.join(__dirname, "../frontend/dist");
-app.use(express.static(frontendDist));
+// Serve arquivos estáticos do frontend (SPA)
+const frontendPath = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendPath));
 
 // Redireciona todas as rotas não-API para o index.html (SPA)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendDist, "index.html"));
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
+// Cria servidor HTTP
 const server = http.createServer(app);
 
 // Inicializa Socket.IO

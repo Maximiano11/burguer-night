@@ -3,26 +3,24 @@ const { Server } = require("socket.io");
 let io;
 
 function initSocket(server) {
-  const { Server } = require("socket.io");
-  io = new Server(server, {
+  io = require("socket.io")(server, {
     cors: {
-      origin: "https://burguer-night-1.onrender.com",
+      origin: process.env.NODE_ENV === "production"
+        ? "https://burguer-night.onrender.com"
+        : "http://localhost:5173",
       methods: ["GET", "POST"],
-      credentials: true,
     },
   });
 
   io.on("connection", (socket) => {
-    console.log("Novo cliente conectado: " + socket.id);
+    console.log("Novo cliente conectado:", socket.id);
   });
 }
 
-function getIO() {
-  if (!io) {
-    throw new Error("Socket.io não inicializado!");
-  }
-  return io;
+function emit(event, data) {
+  if (io) io.emit(event, data);
 }
 
-module.exports = { initSocket, getIO };
+module.exports = { initSocket, emit };
+
 
