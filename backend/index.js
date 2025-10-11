@@ -1,18 +1,24 @@
-const express = require("express");
-const http = require("http");
-const cors = require("cors");
-const path = require("path");
-const { initSocket } = require("./socket");
-const pedidosRouter = require("./routes/pedidos");
+// index.js (ES Modules)
+import express from "express";
+import http from "http";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import { initSocket } from "./socket.js"; // observe a extensão .js
+import pedidosRouter from "./routes/pedidos.js"; // observe a extensão .js
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
 // Configuração de CORS
 app.use(
   cors({
-    origin: import.meta.env.MODE === "production"
-      ? "https://burguer-night.onrender.com" // URL do frontend no Render
-      : "http://localhost:5173",             // URL do frontend local (Vite padrão)
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://burguer-night.onrender.com"
+        : "http://localhost:5173",
     methods: ["GET", "POST", "PATCH"],
     credentials: true,
   })
@@ -38,5 +44,5 @@ const server = http.createServer(app);
 // Inicializa Socket.IO
 initSocket(server);
 
-const PORT = import.meta.env.MODE || 4001;
+const PORT = process.env.PORT || 4001;
 server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
