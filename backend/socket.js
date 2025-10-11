@@ -1,26 +1,23 @@
-const { Server } = require("socket.io");
+// socket.js (ES Modules)
+import { Server } from "socket.io";
 
-let io;
-
-function initSocket(server) {
-  io = require("socket.io")(server, {
+export function initSocket(server) {
+  const io = new Server(server, {
     cors: {
-      origin: import.meta.env.MODE === "production"
-        ? "https://burguer-night.onrender.com"
-        : "http://localhost:5173",
-      methods: ["GET", "POST"],
+      origin:
+        process.env.NODE_ENV === "production"
+          ? "https://burguer-night.onrender.com"
+          : "http://localhost:5173",
+      methods: ["GET", "POST", "PATCH"],
+      credentials: true,
     },
   });
 
   io.on("connection", (socket) => {
     console.log("Novo cliente conectado:", socket.id);
+
+    socket.on("disconnect", () => {
+      console.log("Cliente desconectou:", socket.id);
+    });
   });
 }
-
-function emit(event, data) {
-  if (io) io.emit(event, data);
-}
-
-module.exports = { initSocket, emit };
-
-

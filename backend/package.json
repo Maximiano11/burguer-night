@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Sistema de pedidos de combos de hambúrguer (Burger + Fritas + Refrigerante)",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "build": "node build.js"
